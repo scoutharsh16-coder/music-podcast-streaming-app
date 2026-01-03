@@ -1,20 +1,21 @@
 from flask import Flask
-from flask_cors import CORS
-from flask_jwt_extended import JWTManager
-from dotenv import load_dotenv
-import os
+from config import Config
+from extensions import cors, jwt
 
-load_dotenv()
+def create_app():
+    app = Flask(__name__)
+    app.config.from_object(Config)
 
-app = Flask(__name__)
-CORS(app)
+    cors.init_app(app)
+    jwt.init_app(app)
 
-app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY")
-jwt = JWTManager(app)
+    @app.route("/")
+    def home():
+        return {"message": "Music & Podcast API is running"}
 
-@app.route("/")
-def home():
-    return {"message": "Music & Podcast API is running"}
+    return app
+
+app = create_app()
 
 if __name__ == "__main__":
     app.run(debug=True)
