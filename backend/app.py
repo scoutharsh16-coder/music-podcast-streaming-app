@@ -1,6 +1,6 @@
 from flask import Flask
 from config import Config
-from extensions import cors, jwt
+from extensions import cors, jwt, db
 
 def create_app():
     app = Flask(__name__)
@@ -8,6 +8,7 @@ def create_app():
 
     cors.init_app(app)
     jwt.init_app(app)
+    db.init_app(app)
 
     @app.route("/")
     def home():
