@@ -3,6 +3,8 @@ from config import Config
 from extensions import cors, jwt, db
 from routes.auth_routes import auth_bp
 from models.user import User    
+from routes.track_routes import track_bp
+
 
 def create_app():
     app = Flask(__name__)
@@ -14,6 +16,8 @@ def create_app():
 
     from routes.auth_routes import auth_bp
     app.register_blueprint(auth_bp)
+    app.register_blueprint(track_bp)
+
 
     @app.route("/")
     def home():
