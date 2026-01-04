@@ -1,5 +1,9 @@
 from flask import Blueprint, jsonify
 from models.track import Track
+from flask import send_file, abort
+from utils.audio_stream import stream_audio
+import os
+
 
 track_bp = Blueprint("tracks", __name__, url_prefix="/api/tracks")
 
@@ -32,3 +36,17 @@ def get_podcasts():
         })
 
     return jsonify(result)
+
+@track_bp.route("/stream/<int:track_id>", methods=["GET"])
+def stream_track(track_id):
+    track = Track.query.get(track_id)
+
+    if not track:
+        abort(404, "Track not found")
+
+    file_path = os.path.join("media", os.path.basename(track.file_path))
+
+    if not os.path.exists(file_path):
+        abort(404, "Audio file missing")
+
+    return stream_audio(file_path)
